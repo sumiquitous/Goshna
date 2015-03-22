@@ -1,25 +1,41 @@
 package com.nicktardif.seniorproject.goshna;
 
 import android.text.format.Time;
+import java.util.Date;
 
-/**
- * Created by tick on 3/19/15.
- */
 public class Flight {
+    private String airline;
+    private String flightCode;
+    private Date departureDate;
+
     private String sourceAirport;
     private String destinationAirport;
-    private String flightNumber;
     private Time departureTime;
 
     public Flight() {
 
     }
 
-    public Flight(String sourceAirport, String destinationAirport, String flightNumber, Time departureTime) {
+    public Flight(String airline, String flightCode, Date departureDate, String sourceAirport, String destinationAirport, Time departureTime) {
+        this.airline = airline;
+        this.flightCode = flightCode;
+        this.departureDate = departureDate;
+
         this.sourceAirport = sourceAirport;
         this.destinationAirport = destinationAirport;
-        this.flightNumber = flightNumber;
         this.departureTime = departureTime;
+    }
+
+    public String getAirline() {
+        return this.sourceAirport;
+    }
+
+    public String getFlightCode() {
+        return this.flightCode;
+    }
+
+    public Date getDepartureDate() {
+        return this.departureDate;
     }
 
     public String getSourceAirport() {
@@ -28,10 +44,6 @@ public class Flight {
 
     public String getDestinationAirport() {
         return this.destinationAirport;
-    }
-
-    public String getFlightNumber() {
-        return this.flightNumber;
     }
 
     public Time getDepartureTime() {

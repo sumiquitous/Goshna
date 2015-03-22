@@ -33,23 +33,22 @@ public class FlightAdapter extends ArrayAdapter<Flight> {
         Flight flight = getItem(position);
 
         if (flight != null) {
-            TextView sourceTV = (TextView) view.findViewById(R.id.flight_source);
-            TextView destinationTV = (TextView) view.findViewById(R.id.flight_destination);
-            TextView numberTV = (TextView) view.findViewById(R.id.flight_number);
+            TextView tripTV = (TextView) view.findViewById(R.id.flight_trip);
+            TextView codeTV = (TextView) view.findViewById(R.id.flight_code);
             TextView departureTimeTV = (TextView) view.findViewById(R.id.flight_departure_time);
 
             // Set the message content in the TextView
-            if(sourceTV != null) {
-                sourceTV.setText(flight.getSourceAirport());
+            if(tripTV != null) {
+                String source = flight.getSourceAirport();
+                String destination = flight.getDestinationAirport();
+                String text = source + " -> " + destination;
+                tripTV.setText(text);
             }
-            if(destinationTV != null) {
-                destinationTV.setText(flight.getDestinationAirport());
-            }
-            if(numberTV != null) {
-                numberTV.setText(flight.getFlightNumber());
+            if(codeTV != null) {
+                codeTV.setText(flight.getFlightCode());
             }
             if(departureTimeTV != null) {
-                departureTimeTV.setText(flight.getDepartureTime().toString());
+                departureTimeTV.setText(flight.getDepartureTime().format("%H:%M"));
             }
         }
 

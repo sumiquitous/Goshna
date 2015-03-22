@@ -28,6 +28,7 @@ public class AddFlightActivity extends ActionBarActivity implements TextWatcher 
     private DatePicker datePicker;
     private RelativeLayout searchSection;
     private RelativeLayout addFlightSection;
+    private FlightAdapter flightAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,18 +47,21 @@ public class AddFlightActivity extends ActionBarActivity implements TextWatcher 
         airportAutoCompleteView.addTextChangedListener(this);
         airportAutoCompleteView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, airports));
 
+        flightAdapter = new FlightAdapter(getBaseContext(), R.layout.flight_list_item);
+        ListView flightListView = (ListView) findViewById(R.id.add_flight_list);
+        flightListView.setAdapter(flightAdapter);
+
         searchFlightsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String airport = airportAutoCompleteView.getText().toString();
                 Date date = getDate(datePicker);
 
-                FlightAdapter flightAdapter = new FlightAdapter(getBaseContext(), R.layout.flight_list_item);
-                ListView notificationListView = (ListView) findViewById(R.id.add_flight_list);
-                notificationListView.setAdapter(flightAdapter);
+                Time departure = new Time();
+                departure.set(0, 30, 4, 1, 3, 2014);
 
-                flightAdapter.add(new Flight("TAM", "GNV", "AA1233", new Time()));
-                flightAdapter.add(new Flight("ORL", "JAX", "DL483", new Time()));
+                flightAdapter.add(new Flight("AA", "AA133", new Date(), "TAM", "GNV", departure));
+                flightAdapter.add(new Flight("DEL", "DEL133", new Date(), "ORL", "JAX", departure));
 
                 // Toggle which section is seen
                 searchSection.setVisibility(View.INVISIBLE);
