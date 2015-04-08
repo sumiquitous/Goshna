@@ -13,8 +13,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="My Notifications"
-            android:id="@+id/my_notifications_header"/>
+            android:text="My Messages"
+            android:id="@+id/my_message_header"/>
 
         <Button
             android:layout_width="wrap_content"
@@ -29,13 +29,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:id="@+id/notification_scroll_view"
+        android:id="@+id/message_scroll_view"
         android:layout_below="@id/main_header">
 
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/notification_list">
+            android:id="@+id/message_list">
 
         </ListView>
 

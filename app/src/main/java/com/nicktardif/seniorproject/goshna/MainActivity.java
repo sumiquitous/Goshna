@@ -11,10 +11,35 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.nicktardif.seniorproject.goshna.ApiResponses.MessageResponse;
+
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 
 public class MainActivity extends ActionBarActivity {
     Button addFlightsButton;
-    NotificationAdapter notificationAdapter;
+    MessageAdapter messageAdapter;
+
+    private GoshnaApiService api;
+
+    private Callback<MessageResponse> getMessagesCallback = new Callback<MessageResponse>() {
+        @Override
+        public void success(MessageResponse messageResponse, Response response) {
+            System.out.println(messageResponse.toString());
+
+            for(Message message: messageResponse.messages) {
+                messageAdapter.add(message);
+            }
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+            System.err.println("MessageResponse was a failure, error: " + error.toString());
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,16 +57,22 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+        // Set up our API service with Retrofit
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint("http://45.55.132.122:5000/goshna/api")
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .build();
+        api = restAdapter.create(GoshnaApiService.class);
+
+
         String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         Log.d("ticknardif", "Android ID is: " + androidId);
 
-        notificationAdapter = new NotificationAdapter(this, R.layout.notification_list_item);
-        ListView notificationListView = (ListView) findViewById(R.id.notification_list);
-        notificationListView.setAdapter(notificationAdapter);
+        messageAdapter = new MessageAdapter(this, R.layout.message_list_item);
+        ListView messageListView = (ListView) findViewById(R.id.message_list);
+        messageListView.setAdapter(messageAdapter);
 
-        notificationAdapter.add(new GoshnaNotification("Flight1", "Message1"));
-        notificationAdapter.add(new GoshnaNotification("Flight2", "Message2"));
-
+        api.getMessages(getMessagesCallback);
     }
 
 
