@@ -1,52 +1,43 @@
 package com.nicktardif.seniorproject.goshna;
 
-import android.text.format.Time;
-import java.util.Date;
-
 public class Flight {
-    private String airline;
-    private String flightCode;
-    private Date departureDate;
+    public int id;
+    public String date;
+    public String airline_short;
+    public String source_short;
+    public String dest_short;
+    public int number;
+    public int departure_time;
+    public int airline_id;
+    public int dest_id;
+    public int source_id;
 
-    private String sourceAirport;
-    private String destinationAirport;
-    private Time departureTime;
-
-    public Flight() {
-
+    public Flight(String date, String airline_short, String source_short, String dest_short, int number, int departure_time, int id, int airline_id, int dest_id, int source_id) {
+        this.date = date;
+        this.airline_short = airline_short;
+        this.source_short = source_short;
+        this.dest_short = dest_short;
+        this.number = number;
+        this.departure_time = departure_time;
+        this.id = id;
+        this.airline_id = airline_id;
+        this.dest_id = dest_id;
+        this.source_id = source_id;
     }
 
-    public Flight(String airline, String flightCode, Date departureDate, String sourceAirport, String destinationAirport, Time departureTime) {
-        this.airline = airline;
-        this.flightCode = flightCode;
-        this.departureDate = departureDate;
-
-        this.sourceAirport = sourceAirport;
-        this.destinationAirport = destinationAirport;
-        this.departureTime = departureTime;
-    }
-
-    public String getAirline() {
-        return this.sourceAirport;
-    }
-
-    public String getFlightCode() {
-        return this.flightCode;
-    }
-
-    public Date getDepartureDate() {
-        return this.departureDate;
-    }
-
-    public String getSourceAirport() {
-        return this.sourceAirport;
-    }
-
-    public String getDestinationAirport() {
-        return this.destinationAirport;
-    }
-
-    public Time getDepartureTime() {
-        return this.departureTime;
+    @Override
+    public String toString() {
+        return "Flight{" +
+                "date='" + date + '\'' +
+                ", airline_short='" + airline_short + '\'' +
+                ", source_short='" + source_short + '\'' +
+                ", dest_short='" + dest_short + '\'' +
+                ", number=" + number +
+                ", departure_time=" + departure_time +
+                ", id=" + id +
+                ", airline_id=" + airline_id +
+                ", dest_id=" + dest_id +
+                ", source_id=" + source_id +
+                '}';
     }
 }

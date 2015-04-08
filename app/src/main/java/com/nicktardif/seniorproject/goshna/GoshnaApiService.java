@@ -1,5 +1,8 @@
 package com.nicktardif.seniorproject.goshna;
 
+import com.nicktardif.seniorproject.goshna.ApiResponses.AirlineResponse;
+import com.nicktardif.seniorproject.goshna.ApiResponses.AirportResponse;
+import com.nicktardif.seniorproject.goshna.ApiResponses.FlightResponse;
 import com.nicktardif.seniorproject.goshna.ApiResponses.MessageResponse;
 
 import retrofit.Callback;
@@ -15,4 +18,13 @@ public interface GoshnaApiService {
 
     @GET("/messages")
     void getMessages(Callback<MessageResponse> response);
+
+    @GET("/airports")
+    void getAllAirports(Callback<AirportResponse> response);
+
+    @GET("/airlines")
+    void getAllAirlines(Callback<AirlineResponse> response);
+
+    @POST("/flights/find")
+    void findFlights(@Body FlightSearchCriteria body, Callback<FlightResponse> response);
 }

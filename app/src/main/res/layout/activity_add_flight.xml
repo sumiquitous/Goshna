@@ -11,12 +11,25 @@
         android:layout_width="match_parent"
         android:id="@+id/search_section">
 
-        <AutoCompleteTextView
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Airport Name"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/airport_auto_text_view"/>
+            android:id="@+id/air_block">
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/airport_spinner"/>
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/airline_spinner"/>
+
+        </LinearLayout>
 
         <DatePicker
             android:layout_width="wrap_content"
@@ -25,7 +38,7 @@
             android:datePickerMode="spinner"
             android:calendarViewShown="false"
             android:layout_centerHorizontal="true"
-            android:layout_below="@id/airport_auto_text_view"
+            android:layout_below="@id/air_block"
             android:id="@+id/add_flight_date"
             ></DatePicker>
 

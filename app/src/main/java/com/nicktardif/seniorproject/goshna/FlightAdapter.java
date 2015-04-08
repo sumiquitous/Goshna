@@ -39,16 +39,16 @@ public class FlightAdapter extends ArrayAdapter<Flight> {
 
             // Set the message content in the TextView
             if(tripTV != null) {
-                String source = flight.getSourceAirport();
-                String destination = flight.getDestinationAirport();
+                String source = flight.source_short;
+                String destination = flight.dest_short;
                 String text = source + " -> " + destination;
                 tripTV.setText(text);
             }
             if(codeTV != null) {
-                codeTV.setText(flight.getFlightCode());
+                codeTV.setText(Integer.toString(flight.number));
             }
             if(departureTimeTV != null) {
-                departureTimeTV.setText(flight.getDepartureTime().format("%H:%M"));
+                departureTimeTV.setText(MessageAdapter.timeToString(flight.departure_time));
             }
         }
 

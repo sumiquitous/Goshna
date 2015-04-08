@@ -54,7 +54,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         return view;
     }
 
-    private String timeToString(int time) {
+    public static String timeToString(int time) {
         String end = " AM";
 
         if (time > 60 * 12) {
