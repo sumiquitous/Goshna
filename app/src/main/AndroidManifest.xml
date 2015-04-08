@@ -15,11 +15,11 @@
         </activity>
         <activity
             android:name=".AddFlightActivity"
-            android:label="@string/title_activity_add_flight" >
+            android:label="My Flights" >
         </activity>
         <activity
             android:name=".StartupActivity"
-            android:label="@string/title_activity_startup" >
+            android:label="Goshna" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

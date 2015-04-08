@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.nicktardif.seniorproject.goshna.ApiResponses.IdResponse;
 
@@ -39,6 +40,10 @@ public class StartupActivity extends ActionBarActivity {
         @Override
         public void failure(RetrofitError error) {
             System.err.println("IdResponse was a failure, error: " + error.toString());
+
+            String errorMessage = "Your User ID was not able to be created. Is the server down?";
+
+            Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
         }
     };
 

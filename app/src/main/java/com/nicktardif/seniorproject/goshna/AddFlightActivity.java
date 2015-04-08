@@ -1,6 +1,8 @@
 package com.nicktardif.seniorproject.goshna;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -9,6 +11,7 @@ import android.text.format.Time;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -16,10 +19,14 @@ import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.nicktardif.seniorproject.goshna.ApiResponses.AirlineResponse;
 import com.nicktardif.seniorproject.goshna.ApiResponses.AirportResponse;
+import com.nicktardif.seniorproject.goshna.ApiResponses.FlightID;
+import com.nicktardif.seniorproject.goshna.ApiResponses.FlightIDResponse;
 import com.nicktardif.seniorproject.goshna.ApiResponses.FlightResponse;
+import com.nicktardif.seniorproject.goshna.ApiResponses.IdResponse;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,7 +39,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 
-public class AddFlightActivity extends ActionBarActivity implements TextWatcher {
+public class AddFlightActivity extends ActionBarActivity {
     private Spinner airportSpinner;
     private Spinner airlineSpinner;
     private Button searchFlightsButton;
@@ -47,9 +54,12 @@ public class AddFlightActivity extends ActionBarActivity implements TextWatcher 
 
     private List<Airport> airportList;
     private List<Airline> airlineList;
-    private List<Flight> flightList;
+    private List<RegisteredFlight> flightList;
+    private List<Integer> userFlightIdList;
 
     private GoshnaApiService api;
+
+    private int user_id;
 
     private Callback<AirportResponse> getAirportsCallback = new Callback<AirportResponse>() {
         @Override
@@ -87,9 +97,19 @@ public class AddFlightActivity extends ActionBarActivity implements TextWatcher 
         @Override
         public void success(FlightResponse flightResponse, Response response) {
 
+            flightList.clear();
+            flightAdapter.clear();
+
             for(Flight flight :flightResponse.flights) {
-                flightList.add(flight);
-                flightAdapter.add(flight);
+                boolean registered = false;
+
+                if(userFlightIdList.contains(flight.id)) {
+                    registered = true;
+                }
+
+                RegisteredFlight registeredFlight = new RegisteredFlight(flight, registered);
+                flightAdapter.add(registeredFlight);
+                flightList.add(registeredFlight);
             }
 
             // Toggle which section is seen
@@ -100,6 +120,51 @@ public class AddFlightActivity extends ActionBarActivity implements TextWatcher 
         @Override
         public void failure(RetrofitError error) {
             System.err.println("FlightResponse was a failure, error: " + error.toString());
+        }
+    };
+
+    private Callback<FlightIDResponse> getUserFlightsCallback = new Callback<FlightIDResponse>() {
+        @Override
+        public void success(FlightIDResponse flightsResponse, Response response) {
+
+            userFlightIdList.clear();
+
+            // Add the Flight ID to the userFlightIdList
+            for(FlightID flightID: flightsResponse.flights) {
+                int flight_id = flightID.flight_id;
+                userFlightIdList.add(flight_id);
+            }
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+            System.err.println("FlightResponse was a failure, error: " + error.toString());
+        }
+    };
+
+    private Callback<IdResponse> addUserToFlightCallback = new Callback<IdResponse>() {
+        @Override
+        public void success(IdResponse airportReponse, Response response) {
+            String message = "Successfully added to the flight!";
+            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+            System.err.println("IdResponse was a failure, error: " + error.toString());
+        }
+    };
+
+    private Callback<IdResponse> removeUserFromFlightCallback = new Callback<IdResponse>() {
+        @Override
+        public void success(IdResponse airportReponse, Response response) {
+            String message = "Successfully removed from the flight!";
+            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+            System.err.println("IdResponse was a failure, error: " + error.toString());
         }
     };
 
@@ -118,7 +183,25 @@ public class AddFlightActivity extends ActionBarActivity implements TextWatcher 
         ListView flightListView = (ListView) findViewById(R.id.add_flight_list);
         flightListView.setAdapter(flightAdapter);
 
-        flightList = new ArrayList<Flight>();
+        flightListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView adapterView, View view, int pos, long id) {
+                RegisteredFlight flight = flightList.get(pos);
+                if(flight.registered) {
+                    api.removeUserFromFlight(user_id, flight.flight.id, removeUserFromFlightCallback);
+                    flight.registered = false;
+                    adapterView.invalidate();
+                } else {
+                    api.addUserToFlight(user_id, flight.flight.id, addUserToFlightCallback);
+                    flight.registered = true;
+                }
+            }
+
+        });
+
+        flightList = new ArrayList<RegisteredFlight>();
+        userFlightIdList = new ArrayList<Integer>();
 
         // Set up our API service with Retrofit
         RestAdapter restAdapter = new RestAdapter.Builder()
@@ -145,6 +228,12 @@ public class AddFlightActivity extends ActionBarActivity implements TextWatcher 
         airlineSpinner = (Spinner) findViewById(R.id.airline_spinner);
         airlineAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         airlineSpinner.setAdapter(airlineAdapter);
+
+        SharedPreferences sharedPreferences = this.getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE);
+        user_id = sharedPreferences.getInt(getString(R.string.user_id_pref), -1);
+
+        // Trigger the API to get all the FlightIDs that a user is registered for
+        api.getUserFlightIds(user_id, getUserFlightsCallback);
 
         // Trigger the API to populate the Spinners
         api.getAllAirports(getAirportsCallback);
@@ -210,20 +299,5 @@ public class AddFlightActivity extends ActionBarActivity implements TextWatcher 
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void afterTextChanged(Editable arg0) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-        // TODO Auto-generated method stub
     }
 }

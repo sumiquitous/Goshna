@@ -3,16 +3,13 @@ package com.nicktardif.seniorproject.goshna;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.nicktardif.seniorproject.goshna.ApiResponses.MessageResponse;
 
@@ -30,7 +27,7 @@ public class MainActivity extends ActionBarActivity {
 
     private GoshnaApiService api;
 
-    private Callback<MessageResponse> getMessagesCallback = new Callback<MessageResponse>() {
+    private Callback<MessageResponse> getUserMessagesCallback = new Callback<MessageResponse>() {
         @Override
         public void success(MessageResponse messageResponse, Response response) {
             System.out.println(messageResponse.toString());
@@ -43,10 +40,6 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void failure(RetrofitError error) {
             System.err.println("MessageResponse was a failure, error: " + error.toString());
-
-            String errorMessage = "Your User ID was not able to be created. Is the server down?";
-
-            Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
         }
     };
 
@@ -73,7 +66,7 @@ public class MainActivity extends ActionBarActivity {
         ListView messageListView = (ListView) findViewById(R.id.message_list);
         messageListView.setAdapter(messageAdapter);
 
-        api.getMessages(getMessagesCallback);
+        api.getUserMessages(user_id, getUserMessagesCallback);
     }
 
     private void setOnClickListeners() {
