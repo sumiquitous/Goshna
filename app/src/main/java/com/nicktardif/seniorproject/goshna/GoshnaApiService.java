@@ -3,6 +3,7 @@ package com.nicktardif.seniorproject.goshna;
 import com.nicktardif.seniorproject.goshna.ApiResponses.AirlineResponse;
 import com.nicktardif.seniorproject.goshna.ApiResponses.AirportResponse;
 import com.nicktardif.seniorproject.goshna.ApiResponses.FlightResponse;
+import com.nicktardif.seniorproject.goshna.ApiResponses.IdResponse;
 import com.nicktardif.seniorproject.goshna.ApiResponses.MessageResponse;
 
 import retrofit.Callback;
@@ -27,4 +28,7 @@ public interface GoshnaApiService {
 
     @POST("/flights/find")
     void findFlights(@Body FlightSearchCriteria body, Callback<FlightResponse> response);
+
+    @POST("/user")
+    void createUserId(Callback<IdResponse> response);
 }

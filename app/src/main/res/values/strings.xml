@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">Goshna</string>
 
-    <string name="hello_world">Hello world!</string>
+    <string name="goshna">Goshna</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_add_flight">AddFlightActivity</string>
+    <string name="title_activity_startup">StartupActivity</string>
+    <string name="prefs_file">goshnaprefs</string>
+
+    <string name="user_id_pref">user_id</string>
 </resources>

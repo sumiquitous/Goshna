@@ -1,6 +1,8 @@
 package com.nicktardif.seniorproject.goshna;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.nicktardif.seniorproject.goshna.ApiResponses.MessageResponse;
 
@@ -22,6 +25,8 @@ import retrofit.client.Response;
 public class MainActivity extends ActionBarActivity {
     Button addFlightsButton;
     MessageAdapter messageAdapter;
+
+    int user_id;
 
     private GoshnaApiService api;
 
@@ -38,6 +43,10 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void failure(RetrofitError error) {
             System.err.println("MessageResponse was a failure, error: " + error.toString());
+
+            String errorMessage = "Your User ID was not able to be created. Is the server down?";
+
+            Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
         }
     };
 
@@ -48,14 +57,7 @@ public class MainActivity extends ActionBarActivity {
 
         addFlightsButton = (Button) findViewById(R.id.add_flight_link);
 
-        // Set the onClick of the "Add Flights" button to open the Add Flights activity
-        addFlightsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), AddFlightActivity.class);
-                startActivity(intent);
-            }
-        });
+        setOnClickListeners();
 
         // Set up our API service with Retrofit
         RestAdapter restAdapter = new RestAdapter.Builder()
@@ -64,15 +66,25 @@ public class MainActivity extends ActionBarActivity {
                 .build();
         api = restAdapter.create(GoshnaApiService.class);
 
-
-        String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        Log.d("ticknardif", "Android ID is: " + androidId);
+        SharedPreferences sharedPreferences = this.getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE);
+        user_id = sharedPreferences.getInt(getString(R.string.user_id_pref), -1);
 
         messageAdapter = new MessageAdapter(this, R.layout.message_list_item);
         ListView messageListView = (ListView) findViewById(R.id.message_list);
         messageListView.setAdapter(messageAdapter);
 
         api.getMessages(getMessagesCallback);
+    }
+
+    private void setOnClickListeners() {
+        // Set the onClick of the "Add Flights" button to open the Add Flights activity
+        addFlightsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), AddFlightActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
 
