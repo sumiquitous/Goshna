@@ -43,7 +43,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             }
 
             if(flightTV != null) {
-                flightTV.setText(Integer.toString(message.flight_id));
+                flightTV.setText("Flight ID: " + Integer.toString(message.flight_id));
             }
 
             if(textTV != null) {
@@ -64,6 +64,9 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         int hours = (time / 60) % 12;
         int minutes = time % 60;
 
-        return Integer.toString(hours) + ":" + Integer.toString(minutes) + end;
+        String minutesString = Integer.toString(minutes);
+        if (minutesString.equals("0")) minutesString = "00";
+
+        return Integer.toString(hours) + ":" + minutesString + end;
     }
 }

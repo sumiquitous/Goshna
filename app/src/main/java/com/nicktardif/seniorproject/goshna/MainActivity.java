@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.nicktardif.seniorproject.goshna.ApiResponses.MessageResponse;
 
@@ -20,7 +21,6 @@ import retrofit.client.Response;
 
 
 public class MainActivity extends ActionBarActivity {
-    Button addFlightsButton;
     MessageAdapter messageAdapter;
 
     int user_id;
@@ -31,6 +31,13 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void success(MessageResponse messageResponse, Response response) {
             System.out.println(messageResponse.toString());
+
+            messageAdapter.clear();
+
+            // If there are no messages, display to the user that they can register for messages
+            if(messageResponse.messages.size() == 0) {
+                ((TextView) findViewById(R.id.no_messages_text)).setVisibility(View.VISIBLE);
+            }
 
             for(Message message: messageResponse.messages) {
                 messageAdapter.add(message);
@@ -48,8 +55,6 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        addFlightsButton = (Button) findViewById(R.id.add_flight_link);
-
         setOnClickListeners();
 
         // Set up our API service with Retrofit
@@ -65,19 +70,20 @@ public class MainActivity extends ActionBarActivity {
         messageAdapter = new MessageAdapter(this, R.layout.message_list_item);
         ListView messageListView = (ListView) findViewById(R.id.message_list);
         messageListView.setAdapter(messageAdapter);
+    }
 
-        api.getUserMessages(user_id, getUserMessagesCallback);
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        refreshMessages();
     }
 
     private void setOnClickListeners() {
-        // Set the onClick of the "Add Flights" button to open the Add Flights activity
-        addFlightsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), AddFlightActivity.class);
-                startActivity(intent);
-            }
-        });
+    }
+
+    private void refreshMessages() {
+        api.getUserMessages(user_id, getUserMessagesCallback);
     }
 
 
@@ -96,7 +102,18 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_refresh) {
+            // Refresh the Messages in the List
+            refreshMessages();
+
+            return true;
+        }
+
+        if (id == R.id.action_flights) {
+            // Go to the AddFlights Activity
+            Intent intent = new Intent(getBaseContext(), AddFlightActivity.class);
+            startActivity(intent);
+
             return true;
         }
 

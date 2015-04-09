@@ -1,24 +1,21 @@
 package com.nicktardif.seniorproject.goshna;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.text.format.Time;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nicktardif.seniorproject.goshna.ApiResponses.AirlineResponse;
@@ -44,6 +41,7 @@ public class AddFlightActivity extends ActionBarActivity {
     private Spinner airlineSpinner;
     private Button searchFlightsButton;
     private Button backToSearchButton;
+    private Button goToMessagesButton;
     private DatePicker datePicker;
     private RelativeLayout searchSection;
     private RelativeLayout addFlightSection;
@@ -61,9 +59,16 @@ public class AddFlightActivity extends ActionBarActivity {
 
     private int user_id;
 
+    private String searchedAirport;
+    private String searchedAirline;
+
     private Callback<AirportResponse> getAirportsCallback = new Callback<AirportResponse>() {
         @Override
         public void success(AirportResponse airportReponse, Response response) {
+
+            Airport all = new Airport(0, "ALL", "All Airports");
+            airportList.add(all);
+            airportAdapter.add(all.airport_short);
 
             for(Airport airport :airportReponse.airports) {
                 airportList.add(airport);
@@ -80,6 +85,10 @@ public class AddFlightActivity extends ActionBarActivity {
     private Callback<AirlineResponse> getAirlinesCallback = new Callback<AirlineResponse>() {
         @Override
         public void success(AirlineResponse airlineReponse, Response response) {
+
+            Airline all = new Airline(0, "ALL", "All Airlines");
+            airlineList.add(all);
+            airlineAdapter.add(all.airline_short);
 
             for(Airline airline :airlineReponse.airlines) {
                 airlineList.add(airline);
@@ -111,6 +120,10 @@ public class AddFlightActivity extends ActionBarActivity {
                 flightAdapter.add(registeredFlight);
                 flightList.add(registeredFlight);
             }
+
+            TextView searchedTV = (TextView) findViewById(R.id.searched_info_text);
+            String searchedInfoString = "Searching Airport: " + searchedAirport + " on Airline: " + searchedAirline;
+            searchedTV.setText(searchedInfoString);
 
             // Toggle which section is seen
             searchSection.setVisibility(View.INVISIBLE);
@@ -175,6 +188,7 @@ public class AddFlightActivity extends ActionBarActivity {
 
         searchFlightsButton = (Button) findViewById(R.id.search_flights_button);
         backToSearchButton = (Button) findViewById(R.id.back_to_search_button);
+        goToMessagesButton = (Button) findViewById(R.id.go_home_button);
         datePicker = (DatePicker) findViewById(R.id.add_flight_date);
         searchSection = (RelativeLayout) findViewById(R.id.search_section);
         addFlightSection = (RelativeLayout) findViewById(R.id.add_flight_section);
@@ -190,12 +204,18 @@ public class AddFlightActivity extends ActionBarActivity {
                 RegisteredFlight flight = flightList.get(pos);
                 if(flight.registered) {
                     api.removeUserFromFlight(user_id, flight.flight.id, removeUserFromFlightCallback);
-                    flight.registered = false;
+                    //flight.registered = false;
+                    flightList.get(pos).registered = false;
+                    flightAdapter.getItem(pos).registered = false;
                     adapterView.invalidate();
                 } else {
                     api.addUserToFlight(user_id, flight.flight.id, addUserToFlightCallback);
-                    flight.registered = true;
+                    //flight.registered = true;
+                    flightList.get(pos).registered = true;
+                    flightAdapter.getItem(pos).registered = true;
                 }
+
+                flightAdapter.notifyDataSetChanged();
             }
 
         });
@@ -245,8 +265,18 @@ public class AddFlightActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 // Get the airport and airline IDs
-                int airport_id = airportList.get(airportSpinner.getSelectedItemPosition()).id;
-                int airline_id = airlineList.get(airlineSpinner.getSelectedItemPosition()).id;
+                int airport_id = 0;
+                int airline_id = 0;
+
+                if(airportList.get(airportSpinner.getSelectedItemPosition()) != null) {
+                    searchedAirport = (String) airportSpinner.getSelectedItem();
+                    airport_id = airportList.get(airportSpinner.getSelectedItemPosition()).id;
+                }
+
+                if(airlineList.get(airlineSpinner.getSelectedItemPosition()) != null) {
+                    searchedAirline = (String) airlineSpinner.getSelectedItem();
+                    airline_id = airlineList.get(airlineSpinner.getSelectedItemPosition()).id;
+                }
 
                 // TODO: Get the date correctly
 
@@ -264,6 +294,16 @@ public class AddFlightActivity extends ActionBarActivity {
                 // Toggle which section is seen
                 searchSection.setVisibility(View.VISIBLE);
                 addFlightSection.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        goToMessagesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
             }
         });
     }
@@ -292,11 +332,6 @@ public class AddFlightActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }

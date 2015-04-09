@@ -5,32 +5,29 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/main_header">
+        android:text="My Goshna Messages"
+        android:textSize="20sp"
+        android:id="@+id/my_message_header"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="My Messages"
-            android:id="@+id/my_message_header"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="My Flights"
-            android:id="@+id/add_flight_link"/>
-
-    </RelativeLayout>
+    <TextView
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="300sp"
+        android:text="It looks like you don't have any messages. Register to receive flight notifications by clicking the airplane at the top right of your screen."
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        android:visibility="invisible"
+        android:id="@+id/no_messages_text"/>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:id="@+id/message_scroll_view"
-        android:layout_below="@id/main_header">
+        android:layout_below="@id/my_message_header">
 
         <ListView
             android:layout_width="match_parent"

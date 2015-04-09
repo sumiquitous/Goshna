@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<style name="MyAppActionBarTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">
+    <item name="actionBarStyle">@style/MyApp.ActionBar</item>
+    <item name="android:actionBarStyle">@style/MyApp.ActionBar</item>
+</style>
+
+<!-- Bonus: if you want to style whole Action Bar, not just the menu -->
+<style name="MyApp.ActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+    <item name="background">@color/dark_green</item>
+    <item name="android:background">@color/dark_green</item>
+</style>
+
+</resources>

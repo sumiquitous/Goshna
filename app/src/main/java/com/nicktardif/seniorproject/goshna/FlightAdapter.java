@@ -48,7 +48,8 @@ public class FlightAdapter extends ArrayAdapter<RegisteredFlight> {
                 tripTV.setText(text);
             }
             if(codeTV != null) {
-                codeTV.setText(Integer.toString(flight.flight.number));
+                String code = flight.flight.airline_short + Integer.toString(flight.flight.number);
+                codeTV.setText("Flight Code: " + code);
             }
             if(departureTimeTV != null) {
                 departureTimeTV.setText(MessageAdapter.timeToString(flight.flight.departure_time));
@@ -56,7 +57,10 @@ public class FlightAdapter extends ArrayAdapter<RegisteredFlight> {
 
             if(wrapperLayout != null) {
                 if(flight.registered) {
-                    wrapperLayout.setBackgroundColor(Color.GREEN);
+                    wrapperLayout.setBackgroundColor(getContext().getResources().getColor(R.color.lightest_yellow));
+                }
+                else {
+                    wrapperLayout.setBackgroundColor(Color.WHITE);
                 }
             }
         }

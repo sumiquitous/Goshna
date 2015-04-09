@@ -1,9 +1,9 @@
 package com.nicktardif.seniorproject.goshna;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,7 +17,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 
-public class StartupActivity extends ActionBarActivity {
+public class StartupActivity extends Activity {
 
     private SharedPreferences sharedPreferences;
     private GoshnaApiService api;
