@@ -117,6 +117,14 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
 
+        if (id == R.id.action_about) {
+            // Go to the AddFlights Activity
+            Intent intent = new Intent(getBaseContext(), AboutActivity.class);
+            startActivity(intent);
+
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 }
