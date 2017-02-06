@@ -225,7 +225,7 @@ public class AddFlightActivity extends ActionBarActivity {
 
         // Set up our API service with Retrofit
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint("http://45.55.132.122:5000/goshna/api")
+                .setEndpoint(getString(R.string.api_url))
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
         api = restAdapter.create(GoshnaApiService.class);

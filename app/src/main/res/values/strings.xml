@@ -6,6 +6,6 @@
     <string name="title_activity_add_flight">AddFlightActivity</string>
     <string name="title_activity_startup">StartupActivity</string>
     <string name="prefs_file">goshnaprefs</string>
-
+    <string name="api_url">http://spaceify.net/goshna/api</string>
     <string name="user_id_pref">user_id</string>
 </resources>
